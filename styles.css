@@ -1,0 +1,246 @@
+:root {
+  --bg: #e9edf0;
+  --ink: #101820;
+  --mute: #5b6773;
+  --card: #fff;
+  --line: #cdd5dc;
+  --acc: #d6336c;
+  box-sizing: border-box;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #12161b;
+    --ink: #e8ecf0;
+    --mute: #93a0ad;
+    --card: #1b2128;
+    --line: #2c353e;
+    --acc: #ff5c93;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #12161b;
+  --ink: #e8ecf0;
+  --mute: #93a0ad;
+  --card: #1b2128;
+  --line: #2c353e;
+  --acc: #ff5c93;
+}
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
+  line-height: 1.5;
+}
+.wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+h1 {
+  font-size: clamp(48px, 12vw, 120px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin: 0 0 12px;
+}
+.sub {
+  color: var(--mute);
+  margin: 0 0 28px;
+  max-width: 52ch;
+}
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+input[type="search"] {
+  flex: 1 1 220px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--ink);
+  font: inherit;
+}
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+.btn {
+  padding: 11px 18px;
+  border-radius: 10px;
+  border: 0;
+  background: var(--acc);
+  color: #fff;
+  font-weight: 600;
+}
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 24px;
+}
+.chip {
+  padding: 6px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  background: transparent;
+}
+.chip[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bg);
+  border-color: var(--ink);
+}
+:focus-visible {
+  outline: 2px solid var(--acc);
+  outline-offset: 2px;
+}
+.grid {
+  column-width: 230px;
+  column-gap: 14px;
+}
+figure {
+  margin: 0 0 14px;
+  break-inside: avoid;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--card);
+}
+figure > button {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+figcaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 12px 10px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.65));
+  opacity: 0;
+  transition: opacity 0.15s;
+  pointer-events: none;
+}
+figure:hover figcaption,
+figure:focus-within figcaption {
+  opacity: 1;
+}
+.heart {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 17px;
+  line-height: 1;
+}
+.heart[aria-pressed="true"] {
+  background: var(--acc);
+}
+.empty {
+  padding: 64px 0;
+  text-align: center;
+  color: var(--mute);
+}
+.drop {
+  outline: 3px dashed var(--acc);
+  outline-offset: -12px;
+}
+#lb {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 10, 14, 0.93);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: calc(56px + env(safe-area-inset-top, 0px)) 60px
+    calc(64px + env(safe-area-inset-bottom, 0px));
+  z-index: 10;
+}
+#lb.on {
+  display: flex;
+}
+#lb img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: 6px;
+  min-height: 0;
+}
+#cap {
+  color: #fff;
+  margin-top: 14px;
+  text-align: center;
+}
+#cap small {
+  display: block;
+  color: #9aa6b2;
+}
+.lbb {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 0;
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  font-size: 22px;
+}
+#x {
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: 14px;
+}
+#pv {
+  left: 8px;
+  top: 50%;
+}
+#nx {
+  right: 8px;
+  top: 50%;
+}
+#lf {
+  left: 14px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+}
+#rm {
+  right: 70px;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  width: auto;
+  border-radius: 22px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
