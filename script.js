@@ -107,6 +107,7 @@ const saveFavs = () => {
 
 let cat = "All",
   query = "",
+  sort = "def",
   view = [],
   cur = -1,
   lastFocus = null;
@@ -121,12 +122,16 @@ function renderChips() {
     .join("");
 }
 function filtered() {
-  return items.filter(
+  const r = items.filter(
     (it) =>
       (cat === "All" ||
         (cat === "Favorites" ? favs.has(it.id) : it.cat === cat)) &&
       it.title.toLowerCase().includes(query),
   );
+  if (sort === "az") r.sort((a, b) => a.title.localeCompare(b.title));
+  if (sort === "za") r.sort((a, b) => b.title.localeCompare(a.title));
+  if (sort === "fav") r.sort((a, b) => favs.has(b.id) - favs.has(a.id));
+  return r;
 }
 function render() {
   view = filtered();
@@ -137,6 +142,8 @@ function render() {
     )
     .join("");
   $("#empty").hidden = view.length > 0;
+  $("#count").textContent =
+    view.length + (view.length === 1 ? " image" : " images");
 }
 function toggleFav(i) {
   favs.has(i) ? favs.delete(i) : favs.add(i);
@@ -174,6 +181,7 @@ function open(i) {
   const it = view[i];
   $("#big").src = it.src;
   $("#big").alt = it.title;
+  $("#big").classList.remove("zoom");
   $("#cap").innerHTML =
     `${it.title}<small>${it.cat} · ${i + 1} of ${view.length}</small>`;
   const f = favs.has(it.id);
@@ -184,6 +192,7 @@ function open(i) {
   $("#x").focus();
 }
 function close() {
+  play(false);
   $("#lb").classList.remove("on");
   cur = -1;
   if (lastFocus && document.contains(lastFocus)) lastFocus.focus();
@@ -217,7 +226,61 @@ document.addEventListener("keydown", (e) => {
   if (e.key === "Escape") close();
   if (e.key === "ArrowLeft") step(-1);
   if (e.key === "ArrowRight") step(1);
+  if (e.key === "p" || e.key === "P") play(!timer);
 });
+
+/* Slideshow, zoom, swipe */
+let timer = null;
+function play(on) {
+  clearInterval(timer);
+  timer = null;
+  $("#pl").textContent = on ? "❚❚" : "▶";
+  $("#pl").setAttribute("aria-pressed", on);
+  if (on) timer = setInterval(() => step(1), 3000);
+}
+$("#pl").onclick = () => play(!timer);
+$("#big").onclick = (e) => {
+  const im = e.currentTarget,
+    z = im.classList.toggle("zoom");
+  if (z) {
+    const r = im.getBoundingClientRect();
+    im.style.transformOrigin =
+      ((e.clientX - r.left) / r.width) * 100 +
+      "% " +
+      ((e.clientY - r.top) / r.height) * 100 +
+      "%";
+  }
+};
+let tx = null;
+$("#lb").addEventListener(
+  "touchstart",
+  (e) => {
+    tx = e.touches[0].clientX;
+  },
+  { passive: true },
+);
+$("#lb").addEventListener("touchend", (e) => {
+  if (tx === null) return;
+  const dx = e.changedTouches[0].clientX - tx;
+  tx = null;
+  if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+});
+
+/* Toolbar: sort, size, theme */
+$("#sort").onchange = (e) => {
+  sort = e.target.value;
+  render();
+};
+$("#size").oninput = (e) => {
+  $("#grid").style.columnWidth = e.target.value + "px";
+};
+$("#theme").onclick = () => {
+  const d = document.documentElement,
+    dark = d.dataset.theme
+      ? d.dataset.theme === "dark"
+      : matchMedia("(prefers-color-scheme:dark)").matches;
+  d.dataset.theme = dark ? "light" : "dark";
+};
 
 /* Upload */
 function addFiles(files) {
